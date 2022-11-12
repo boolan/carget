@@ -1,0 +1,111 @@
+GET http://localhost:4004/carget/Vehicles
+
+### CREATE MODELS
+POST http://localhost:4004/carget/Models
+Content-Type: application/json
+
+{
+    "model"                   : "VW_Golf_15_TSI",
+    "description"             : "Volkswagen Golf 1.5 TSI",
+    "daily_rate"              : "340",
+    "currency_code"           : "PLN"
+}
+###
+POST http://localhost:4004/carget/Models
+Content-Type: application/json
+
+{
+    "model"                   : "VW_PASSAT_20_TDI",
+    "description"             : "Volkswagen Passar 2.0 TDI",
+    "daily_rate"              : "410",
+    "currency_code"           : "PLN"
+}
+
+###
+POST http://localhost:4004/carget/Models
+Content-Type: application/json
+
+{
+    "model"                   : "TOYOTA_COROLLA",
+    "description"             : "Toyota Corolla 1.6",
+    "daily_rate"              : "290",
+    "currency_code"           : "PLN"
+}
+
+###
+POST http://localhost:4004/carget/Models
+Content-Type: application/json
+
+{
+    "model"                   : "TOYOTA_RAV4",
+    "description"             : "Toyota RAV4",
+    "daily_rate"              : "499",
+    "currency_code"           : "PLN"
+}
+
+###
+POST http://localhost:4004/carget/Models
+Content-Type: application/json
+
+{
+    "model"                   : "AUDI_TT_20",
+    "description"             : "Audi TT 2.0",
+    "daily_rate"              : "599",
+    "currency_code"           : "PLN"
+}
+
+###
+POST http://localhost:4004/carget/Vehicles
+Content-Type: application/json
+
+{ "plate": "DOA555U",
+      "color": "black",
+      "mileage": 77863.4,
+      "mileage_unit": "Km",
+      "daily_rate": 200,
+      "currency_code": "PLN",
+      "last_overhaul": "2020-03-28",
+      "next_overhaul": "2024-03-28",
+      "model_ID": null
+    }
+
+### Currencies ###
+## US Dollar
+POST http://localhost:4004/carget/Currencies
+Content-Type: application/json
+
+{ "code"    : "USD",
+  "descr"   : "American Dollar",
+  "name"    : "USD",
+  "symbol"  : "$"
+}
+
+### British pound
+POST http://localhost:4004/carget/Currencies
+Content-Type: application/json
+
+{ "code"    : "GBP",
+  "descr"   : "British Pound",
+  "name"    : "GBP",
+  "symbol"  : "£"
+}
+
+### Złoty polski
+POST http://localhost:4004/carget/Currencies
+Content-Type: application/json
+
+{ "code"    : "PLN",
+  "descr"   : "Złoty polski",
+  "name"    : "PLN",
+  "symbol"  : "zł"
+}
+
+### Euro
+POST http://localhost:4004/carget/Currencies
+Content-Type: application/json
+
+{ "code"    : "EUR",
+  "descr"   : "Euro",
+  "name"    : "EUR",
+  "symbol"  : "€"
+}
