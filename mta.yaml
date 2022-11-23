@@ -2,6 +2,13 @@ _schema-version: "3.1"
 ID: carget
 description: A simple CAP project.
 version: 1.0.0
+parameters:
+  enable-parallel-deployments: true
+build-parameters:
+  before-all:
+    - builder: custom
+      commands:
+        - npx -p @sap/cds-dk cds build --production
 modules:
 - name: carget-srv
   type: nodejs
@@ -28,7 +35,7 @@ modules:
   type: com.sap.application.content
   path: .
   requires:
-  - name: carget-repo-host
+  - name: carget-html5-repo-host
     parameters:
       content-target: true
   build-parameters:
@@ -49,42 +56,42 @@ modules:
     - npm run build:cf
     supported-platforms: []
 - name: carget-destinations
-   type: com.sap.application.content
-   requires:
-     - name: carget-auth
-       parameters:
-         service-key:
-           name: carget-auth-key
-     - name: carget-html5-repo-host
-       parameters:
-         service-key:
-           name: carget-html5-repo-host-key
-     - name: srv-api
-     - name: carget-destination
-       parameters:
-         content-target: true
-   parameters:
-     content:
-       instance:
-         destinations:
-           - Authentication: OAuth2UserTokenExchange
-             Name: carget-app-srv
-             TokenServiceInstanceName: carget-auth
-             TokenServiceKeyName: carget-auth-key
-             URL: '~{srv-api/srv-url}'
-             sap.cloud.service: kbu.carget.service
-           - Name: carget-html5-repo-host
-             ServiceInstanceName: caget-html5-repo-host
-             ServiceKeyName: carget-html5-repo-host-key
-             sap.cloud.service: kbu.carget.service
-           - Authentication: OAuth2UserTokenExchange
-             Name: carget-auth
-             ServiceInstanceName: carget-auth
-             ServiceKeyName: carget-auth-key
-             sap.cloud.service: kbu.carget.service
-         existing_destinations_policy: update
-   build-parameters:
-     no-source: true
+  type: com.sap.application.content
+  requires:
+    - name: carget-auth
+      parameters:
+        service-key:
+          name: carget-auth-key
+    - name: carget-html5-repo-host
+      parameters:
+        service-key:
+          name: carget-html5-repo-host-key
+    - name: srv-api
+    - name: carget-destination
+      parameters:
+        content-target: true
+  parameters:
+    content:
+      instance:
+        destinations:
+          - Authentication: OAuth2UserTokenExchange
+            Name: carget-app-srv
+            TokenServiceInstanceName: carget-auth
+            TokenServiceKeyName: carget-auth-key
+            URL: '~{srv-api/srv-url}'
+            sap.cloud.service: kbu.carget.service
+          - Name: carget-html5-repo-host
+            ServiceInstanceName: carget-html5-repo-host
+            ServiceKeyName: carget-html5-repo-host-key
+            sap.cloud.service: kbu.carget.service
+          - Authentication: OAuth2UserTokenExchange
+            Name: carget-auth
+            ServiceInstanceName: carget-auth
+            ServiceKeyName: carget-auth-key
+            sap.cloud.service: kbu.carget.service
+        existing_destinations_policy: update
+  build-parameters:
+    no-source: true
 resources:
 - name: carget-db
   type: com.sap.xs.hdi-container
@@ -124,14 +131,6 @@ resources:
     service: destination
     service-name: carget-destination-service
     service-plan: lite
-parameters:
-  deploy_mode: html5-repo
-  enable-parallel-deployments: true
-build-parameters:
-  before-all:
-  - builder: custom
-    commands:
-    - npx -p @sap/cds-dk cds build --production
 - name: carget-destination
   type: org.cloudfoundry.managed-service
   parameters:
@@ -140,7 +139,7 @@ build-parameters:
     config:
       HTML5Runtime_enabled: true
 - name: carget-html5-repo-host
-   type: org.cloudfoundry.managed-service
-   parameters:
-     service: html5-apps-repo
-     service-plan: app-host
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: html5-apps-repo
+    service-plan: app-host
