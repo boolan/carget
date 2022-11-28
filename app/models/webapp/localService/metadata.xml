@@ -1,0 +1,448 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/Common.xml">
+        <edmx:Include Alias="Common" Namespace="com.sap.vocabularies.Common.v1"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Core.V1.xml">
+        <edmx:Include Alias="Core" Namespace="Org.OData.Core.V1"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/UI.xml">
+        <edmx:Include Alias="UI" Namespace="com.sap.vocabularies.UI.v1"/>
+    </edmx:Reference>
+    <edmx:DataServices>
+        <Schema Namespace="CargetService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <EntityContainer Name="EntityContainer">
+                <EntitySet Name="Vehicles" EntityType="CargetService.Vehicles">
+                    <NavigationPropertyBinding Path="currency" Target="Currencies"/>
+                    <NavigationPropertyBinding Path="bookings" Target="Bookings"/>
+                    <NavigationPropertyBinding Path="model" Target="Models"/>
+                    <NavigationPropertyBinding Path="SiblingEntity" Target="Vehicles"/>
+                </EntitySet>
+                <EntitySet Name="Bookings" EntityType="CargetService.Bookings">
+                    <NavigationPropertyBinding Path="vehicle" Target="Vehicles"/>
+                    <NavigationPropertyBinding Path="SiblingEntity" Target="Bookings"/>
+                </EntitySet>
+                <EntitySet Name="Models" EntityType="CargetService.Models">
+                    <NavigationPropertyBinding Path="currency" Target="Currencies"/>
+                    <NavigationPropertyBinding Path="vehicles" Target="Vehicles"/>
+                    <NavigationPropertyBinding Path="SiblingEntity" Target="Models"/>
+                </EntitySet>
+                <EntitySet Name="Currencies" EntityType="CargetService.Currencies">
+                    <NavigationPropertyBinding Path="texts" Target="Currencies_texts"/>
+                    <NavigationPropertyBinding Path="localized" Target="Currencies_texts"/>
+                </EntitySet>
+                <EntitySet Name="Currencies_texts" EntityType="CargetService.Currencies_texts"/>
+            </EntityContainer>
+            <EntityType Name="Vehicles">
+                <Key>
+                    <PropertyRef Name="ID"/>
+                    <PropertyRef Name="IsActiveEntity"/>
+                </Key>
+                <Property Name="ID" Type="Edm.Guid" Nullable="false"/>
+                <Property Name="createdAt" Type="Edm.DateTimeOffset" Precision="7"/>
+                <Property Name="createdBy" Type="Edm.String" MaxLength="255"/>
+                <Property Name="modifiedAt" Type="Edm.DateTimeOffset" Precision="7"/>
+                <Property Name="modifiedBy" Type="Edm.String" MaxLength="255"/>
+                <Property Name="plate" Type="Edm.String" MaxLength="10"/>
+                <Property Name="color" Type="Edm.String"/>
+                <Property Name="mileage" Type="Edm.Decimal" Scale="1" Precision="7"/>
+                <Property Name="mileage_unit" Type="Edm.String" MaxLength="2"/>
+                <Property Name="daily_rate" Type="Edm.Decimal" Scale="2" Precision="7"/>
+                <NavigationProperty Name="currency" Type="CargetService.Currencies">
+                    <ReferentialConstraint Property="currency_code" ReferencedProperty="code"/>
+                </NavigationProperty>
+                <Property Name="currency_code" Type="Edm.String" MaxLength="3"/>
+                <Property Name="last_overhaul" Type="Edm.Date"/>
+                <Property Name="next_overhaul" Type="Edm.Date"/>
+                <NavigationProperty Name="bookings" Type="Collection(CargetService.Bookings)" Partner="vehicle"/>
+                <NavigationProperty Name="model" Type="CargetService.Models" Partner="vehicles">
+                    <ReferentialConstraint Property="model_ID" ReferencedProperty="ID"/>
+                </NavigationProperty>
+                <Property Name="model_ID" Type="Edm.Guid"/>
+                <Property Name="IsActiveEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="true"/>
+                <Property Name="HasActiveEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="false"/>
+                <Property Name="HasDraftEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="false"/>
+                <NavigationProperty Name="DraftAdministrativeData" Type="CargetService.DraftAdministrativeData" ContainsTarget="true"/>
+                <NavigationProperty Name="SiblingEntity" Type="CargetService.Vehicles"/>
+            </EntityType>
+            <EntityType Name="Bookings">
+                <Key>
+                    <PropertyRef Name="ID"/>
+                    <PropertyRef Name="IsActiveEntity"/>
+                </Key>
+                <Property Name="ID" Type="Edm.Guid" Nullable="false"/>
+                <Property Name="createdAt" Type="Edm.DateTimeOffset" Precision="7"/>
+                <Property Name="createdBy" Type="Edm.String" MaxLength="255"/>
+                <Property Name="modifiedAt" Type="Edm.DateTimeOffset" Precision="7"/>
+                <Property Name="modifiedBy" Type="Edm.String" MaxLength="255"/>
+                <Property Name="customer_id" Type="Edm.Int32"/>
+                <Property Name="booking_status" Type="Edm.Int32"/>
+                <Property Name="booked_from" Type="Edm.DateTimeOffset"/>
+                <Property Name="booked_to" Type="Edm.DateTimeOffset"/>
+                <NavigationProperty Name="vehicle" Type="CargetService.Vehicles" Partner="bookings">
+                    <ReferentialConstraint Property="vehicle_ID" ReferencedProperty="ID"/>
+                </NavigationProperty>
+                <Property Name="vehicle_ID" Type="Edm.Guid"/>
+                <Property Name="IsActiveEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="true"/>
+                <Property Name="HasActiveEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="false"/>
+                <Property Name="HasDraftEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="false"/>
+                <NavigationProperty Name="DraftAdministrativeData" Type="CargetService.DraftAdministrativeData" ContainsTarget="true"/>
+                <NavigationProperty Name="SiblingEntity" Type="CargetService.Bookings"/>
+            </EntityType>
+            <EntityType Name="Models">
+                <Key>
+                    <PropertyRef Name="ID"/>
+                    <PropertyRef Name="IsActiveEntity"/>
+                </Key>
+                <Property Name="ID" Type="Edm.Guid" Nullable="false"/>
+                <Property Name="createdAt" Type="Edm.DateTimeOffset" Precision="7"/>
+                <Property Name="createdBy" Type="Edm.String" MaxLength="255"/>
+                <Property Name="modifiedAt" Type="Edm.DateTimeOffset" Precision="7"/>
+                <Property Name="modifiedBy" Type="Edm.String" MaxLength="255"/>
+                <Property Name="model" Type="Edm.String" MaxLength="25"/>
+                <Property Name="description" Type="Edm.String" MaxLength="50"/>
+                <Property Name="daily_rate" Type="Edm.Decimal" Scale="2" Precision="7"/>
+                <NavigationProperty Name="currency" Type="CargetService.Currencies">
+                    <ReferentialConstraint Property="currency_code" ReferencedProperty="code"/>
+                </NavigationProperty>
+                <Property Name="currency_code" Type="Edm.String" MaxLength="3"/>
+                <NavigationProperty Name="vehicles" Type="Collection(CargetService.Vehicles)" Partner="model"/>
+                <Property Name="IsActiveEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="true"/>
+                <Property Name="HasActiveEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="false"/>
+                <Property Name="HasDraftEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="false"/>
+                <NavigationProperty Name="DraftAdministrativeData" Type="CargetService.DraftAdministrativeData" ContainsTarget="true"/>
+                <NavigationProperty Name="SiblingEntity" Type="CargetService.Models"/>
+            </EntityType>
+            <EntityType Name="Currencies">
+                <Key>
+                    <PropertyRef Name="code"/>
+                </Key>
+                <Property Name="name" Type="Edm.String" MaxLength="255"/>
+                <Property Name="descr" Type="Edm.String" MaxLength="1000"/>
+                <Property Name="code" Type="Edm.String" MaxLength="3" Nullable="false"/>
+                <Property Name="symbol" Type="Edm.String" MaxLength="5"/>
+                <NavigationProperty Name="texts" Type="Collection(CargetService.Currencies_texts)">
+                    <OnDelete Action="Cascade"/>
+                </NavigationProperty>
+                <NavigationProperty Name="localized" Type="CargetService.Currencies_texts">
+                    <ReferentialConstraint Property="code" ReferencedProperty="code"/>
+                </NavigationProperty>
+            </EntityType>
+            <EntityType Name="DraftAdministrativeData">
+                <Key>
+                    <PropertyRef Name="DraftUUID"/>
+                </Key>
+                <Property Name="DraftUUID" Type="Edm.Guid" Nullable="false"/>
+                <Property Name="CreationDateTime" Type="Edm.DateTimeOffset" Precision="7"/>
+                <Property Name="CreatedByUser" Type="Edm.String" MaxLength="256"/>
+                <Property Name="DraftIsCreatedByMe" Type="Edm.Boolean"/>
+                <Property Name="LastChangeDateTime" Type="Edm.DateTimeOffset" Precision="7"/>
+                <Property Name="LastChangedByUser" Type="Edm.String" MaxLength="256"/>
+                <Property Name="InProcessByUser" Type="Edm.String" MaxLength="256"/>
+                <Property Name="DraftIsProcessedByMe" Type="Edm.Boolean"/>
+            </EntityType>
+            <EntityType Name="Currencies_texts">
+                <Key>
+                    <PropertyRef Name="locale"/>
+                    <PropertyRef Name="code"/>
+                </Key>
+                <Property Name="locale" Type="Edm.String" MaxLength="14" Nullable="false"/>
+                <Property Name="name" Type="Edm.String" MaxLength="255"/>
+                <Property Name="descr" Type="Edm.String" MaxLength="1000"/>
+                <Property Name="code" Type="Edm.String" MaxLength="3" Nullable="false"/>
+            </EntityType>
+            <Action Name="draftPrepare" IsBound="true" EntitySetPath="in">
+                <Parameter Name="in" Type="CargetService.Vehicles"/>
+                <Parameter Name="SideEffectsQualifier" Type="Edm.String"/>
+                <ReturnType Type="CargetService.Vehicles"/>
+            </Action>
+            <Action Name="draftPrepare" IsBound="true" EntitySetPath="in">
+                <Parameter Name="in" Type="CargetService.Bookings"/>
+                <Parameter Name="SideEffectsQualifier" Type="Edm.String"/>
+                <ReturnType Type="CargetService.Bookings"/>
+            </Action>
+            <Action Name="draftPrepare" IsBound="true" EntitySetPath="in">
+                <Parameter Name="in" Type="CargetService.Models"/>
+                <Parameter Name="SideEffectsQualifier" Type="Edm.String"/>
+                <ReturnType Type="CargetService.Models"/>
+            </Action>
+            <Action Name="draftActivate" IsBound="true" EntitySetPath="in">
+                <Parameter Name="in" Type="CargetService.Vehicles"/>
+                <ReturnType Type="CargetService.Vehicles"/>
+            </Action>
+            <Action Name="draftActivate" IsBound="true" EntitySetPath="in">
+                <Parameter Name="in" Type="CargetService.Bookings"/>
+                <ReturnType Type="CargetService.Bookings"/>
+            </Action>
+            <Action Name="draftActivate" IsBound="true" EntitySetPath="in">
+                <Parameter Name="in" Type="CargetService.Models"/>
+                <ReturnType Type="CargetService.Models"/>
+            </Action>
+            <Action Name="draftEdit" IsBound="true" EntitySetPath="in">
+                <Parameter Name="in" Type="CargetService.Vehicles"/>
+                <Parameter Name="PreserveChanges" Type="Edm.Boolean"/>
+                <ReturnType Type="CargetService.Vehicles"/>
+            </Action>
+            <Action Name="draftEdit" IsBound="true" EntitySetPath="in">
+                <Parameter Name="in" Type="CargetService.Bookings"/>
+                <Parameter Name="PreserveChanges" Type="Edm.Boolean"/>
+                <ReturnType Type="CargetService.Bookings"/>
+            </Action>
+            <Action Name="draftEdit" IsBound="true" EntitySetPath="in">
+                <Parameter Name="in" Type="CargetService.Models"/>
+                <Parameter Name="PreserveChanges" Type="Edm.Boolean"/>
+                <ReturnType Type="CargetService.Models"/>
+            </Action>
+            <Annotations Target="CargetService.EntityContainer/Vehicles">
+                <Annotation Term="Common.DraftRoot">
+                    <Record Type="Common.DraftRootType">
+                        <PropertyValue Property="ActivationAction" String="CargetService.draftActivate"/>
+                        <PropertyValue Property="EditAction" String="CargetService.draftEdit"/>
+                        <PropertyValue Property="PreparationAction" String="CargetService.draftPrepare"/>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="CargetService.Vehicles/createdAt">
+                <Annotation Term="UI.HiddenFilter" Bool="true"/>
+                <Annotation Term="Core.Immutable" Bool="true"/>
+                <Annotation Term="Core.Computed" Bool="true"/>
+                <Annotation Term="Common.Label" String="{i18n>CreatedAt}"/>
+                </Annotations>
+                <Annotations Target="CargetService.Vehicles/createdBy">
+                    <Annotation Term="UI.HiddenFilter" Bool="true"/>
+                    <Annotation Term="Core.Immutable" Bool="true"/>
+                    <Annotation Term="Core.Computed" Bool="true"/>
+                    <Annotation Term="Core.Description" String="{i18n>UserID.Description}"/>
+                        <Annotation Term="Common.Label" String="{i18n>CreatedBy}"/>
+                        </Annotations>
+                        <Annotations Target="CargetService.Vehicles/modifiedAt">
+                            <Annotation Term="UI.HiddenFilter" Bool="true"/>
+                            <Annotation Term="Core.Computed" Bool="true"/>
+                            <Annotation Term="Common.Label" String="{i18n>ChangedAt}"/>
+                            </Annotations>
+                            <Annotations Target="CargetService.Vehicles/modifiedBy">
+                                <Annotation Term="UI.HiddenFilter" Bool="true"/>
+                                <Annotation Term="Core.Computed" Bool="true"/>
+                                <Annotation Term="Core.Description" String="{i18n>UserID.Description}"/>
+                                    <Annotation Term="Common.Label" String="{i18n>ChangedBy}"/>
+                                    </Annotations>
+                                    <Annotations Target="CargetService.Vehicles/currency">
+                                        <Annotation Term="Common.Label" String="{i18n>Currency}"/>
+                                            <Annotation Term="Core.Description" String="{i18n>CurrencyCode.Description}"/>
+                                            </Annotations>
+                                            <Annotations Target="CargetService.Vehicles/currency_code">
+                                                <Annotation Term="Common.Label" String="{i18n>Currency}"/>
+                                                    <Annotation Term="Common.ValueList">
+                                                        <Record Type="Common.ValueListType">
+                                                            <PropertyValue Property="Label" String="{i18n>Currency}"/>
+                                                                <PropertyValue Property="CollectionPath" String="Currencies"/>
+                                                                <PropertyValue Property="Parameters">
+                                                                    <Collection>
+                                                                        <Record Type="Common.ValueListParameterInOut">
+                                                                            <PropertyValue Property="LocalDataProperty" PropertyPath="currency_code"/>
+                                                                            <PropertyValue Property="ValueListProperty" String="code"/>
+                                                                        </Record>
+                                                                        <Record Type="Common.ValueListParameterDisplayOnly">
+                                                                            <PropertyValue Property="ValueListProperty" String="name"/>
+                                                                        </Record>
+                                                                    </Collection>
+                                                                </PropertyValue>
+                                                            </Record>
+                                                        </Annotation>
+                                                        <Annotation Term="Core.Description" String="{i18n>CurrencyCode.Description}"/>
+                                                        </Annotations>
+                                                        <Annotations Target="CargetService.Vehicles/IsActiveEntity">
+                                                            <Annotation Term="UI.Hidden" Bool="true"/>
+                                                        </Annotations>
+                                                        <Annotations Target="CargetService.Vehicles/HasActiveEntity">
+                                                            <Annotation Term="UI.Hidden" Bool="true"/>
+                                                        </Annotations>
+                                                        <Annotations Target="CargetService.Vehicles/HasDraftEntity">
+                                                            <Annotation Term="UI.Hidden" Bool="true"/>
+                                                        </Annotations>
+                                                        <Annotations Target="CargetService.Vehicles/DraftAdministrativeData">
+                                                            <Annotation Term="UI.Hidden" Bool="true"/>
+                                                        </Annotations>
+                                                        <Annotations Target="CargetService.EntityContainer/Bookings">
+                                                            <Annotation Term="Common.DraftRoot">
+                                                                <Record Type="Common.DraftRootType">
+                                                                    <PropertyValue Property="ActivationAction" String="CargetService.draftActivate"/>
+                                                                    <PropertyValue Property="EditAction" String="CargetService.draftEdit"/>
+                                                                    <PropertyValue Property="PreparationAction" String="CargetService.draftPrepare"/>
+                                                                </Record>
+                                                            </Annotation>
+                                                        </Annotations>
+                                                        <Annotations Target="CargetService.Bookings/createdAt">
+                                                            <Annotation Term="UI.HiddenFilter" Bool="true"/>
+                                                            <Annotation Term="Core.Immutable" Bool="true"/>
+                                                            <Annotation Term="Core.Computed" Bool="true"/>
+                                                            <Annotation Term="Common.Label" String="{i18n>CreatedAt}"/>
+                                                            </Annotations>
+                                                            <Annotations Target="CargetService.Bookings/createdBy">
+                                                                <Annotation Term="UI.HiddenFilter" Bool="true"/>
+                                                                <Annotation Term="Core.Immutable" Bool="true"/>
+                                                                <Annotation Term="Core.Computed" Bool="true"/>
+                                                                <Annotation Term="Core.Description" String="{i18n>UserID.Description}"/>
+                                                                    <Annotation Term="Common.Label" String="{i18n>CreatedBy}"/>
+                                                                    </Annotations>
+                                                                    <Annotations Target="CargetService.Bookings/modifiedAt">
+                                                                        <Annotation Term="UI.HiddenFilter" Bool="true"/>
+                                                                        <Annotation Term="Core.Computed" Bool="true"/>
+                                                                        <Annotation Term="Common.Label" String="{i18n>ChangedAt}"/>
+                                                                        </Annotations>
+                                                                        <Annotations Target="CargetService.Bookings/modifiedBy">
+                                                                            <Annotation Term="UI.HiddenFilter" Bool="true"/>
+                                                                            <Annotation Term="Core.Computed" Bool="true"/>
+                                                                            <Annotation Term="Core.Description" String="{i18n>UserID.Description}"/>
+                                                                                <Annotation Term="Common.Label" String="{i18n>ChangedBy}"/>
+                                                                                </Annotations>
+                                                                                <Annotations Target="CargetService.Bookings/IsActiveEntity">
+                                                                                    <Annotation Term="UI.Hidden" Bool="true"/>
+                                                                                </Annotations>
+                                                                                <Annotations Target="CargetService.Bookings/HasActiveEntity">
+                                                                                    <Annotation Term="UI.Hidden" Bool="true"/>
+                                                                                </Annotations>
+                                                                                <Annotations Target="CargetService.Bookings/HasDraftEntity">
+                                                                                    <Annotation Term="UI.Hidden" Bool="true"/>
+                                                                                </Annotations>
+                                                                                <Annotations Target="CargetService.Bookings/DraftAdministrativeData">
+                                                                                    <Annotation Term="UI.Hidden" Bool="true"/>
+                                                                                </Annotations>
+                                                                                <Annotations Target="CargetService.EntityContainer/Models">
+                                                                                    <Annotation Term="Common.DraftRoot">
+                                                                                        <Record Type="Common.DraftRootType">
+                                                                                            <PropertyValue Property="ActivationAction" String="CargetService.draftActivate"/>
+                                                                                            <PropertyValue Property="EditAction" String="CargetService.draftEdit"/>
+                                                                                            <PropertyValue Property="PreparationAction" String="CargetService.draftPrepare"/>
+                                                                                        </Record>
+                                                                                    </Annotation>
+                                                                                </Annotations>
+                                                                                <Annotations Target="CargetService.Models/createdAt">
+                                                                                    <Annotation Term="UI.HiddenFilter" Bool="true"/>
+                                                                                    <Annotation Term="Core.Immutable" Bool="true"/>
+                                                                                    <Annotation Term="Core.Computed" Bool="true"/>
+                                                                                    <Annotation Term="Common.Label" String="{i18n>CreatedAt}"/>
+                                                                                    </Annotations>
+                                                                                    <Annotations Target="CargetService.Models/createdBy">
+                                                                                        <Annotation Term="UI.HiddenFilter" Bool="true"/>
+                                                                                        <Annotation Term="Core.Immutable" Bool="true"/>
+                                                                                        <Annotation Term="Core.Computed" Bool="true"/>
+                                                                                        <Annotation Term="Core.Description" String="{i18n>UserID.Description}"/>
+                                                                                            <Annotation Term="Common.Label" String="{i18n>CreatedBy}"/>
+                                                                                            </Annotations>
+                                                                                            <Annotations Target="CargetService.Models/modifiedAt">
+                                                                                                <Annotation Term="UI.HiddenFilter" Bool="true"/>
+                                                                                                <Annotation Term="Core.Computed" Bool="true"/>
+                                                                                                <Annotation Term="Common.Label" String="{i18n>ChangedAt}"/>
+                                                                                                </Annotations>
+                                                                                                <Annotations Target="CargetService.Models/modifiedBy">
+                                                                                                    <Annotation Term="UI.HiddenFilter" Bool="true"/>
+                                                                                                    <Annotation Term="Core.Computed" Bool="true"/>
+                                                                                                    <Annotation Term="Core.Description" String="{i18n>UserID.Description}"/>
+                                                                                                        <Annotation Term="Common.Label" String="{i18n>ChangedBy}"/>
+                                                                                                        </Annotations>
+                                                                                                        <Annotations Target="CargetService.Models/currency">
+                                                                                                            <Annotation Term="Common.Label" String="{i18n>Currency}"/>
+                                                                                                                <Annotation Term="Core.Description" String="{i18n>CurrencyCode.Description}"/>
+                                                                                                                </Annotations>
+                                                                                                                <Annotations Target="CargetService.Models/currency_code">
+                                                                                                                    <Annotation Term="Common.Label" String="{i18n>Currency}"/>
+                                                                                                                        <Annotation Term="Common.ValueList">
+                                                                                                                            <Record Type="Common.ValueListType">
+                                                                                                                                <PropertyValue Property="Label" String="{i18n>Currency}"/>
+                                                                                                                                    <PropertyValue Property="CollectionPath" String="Currencies"/>
+                                                                                                                                    <PropertyValue Property="Parameters">
+                                                                                                                                        <Collection>
+                                                                                                                                            <Record Type="Common.ValueListParameterInOut">
+                                                                                                                                                <PropertyValue Property="LocalDataProperty" PropertyPath="currency_code"/>
+                                                                                                                                                <PropertyValue Property="ValueListProperty" String="code"/>
+                                                                                                                                            </Record>
+                                                                                                                                            <Record Type="Common.ValueListParameterDisplayOnly">
+                                                                                                                                                <PropertyValue Property="ValueListProperty" String="name"/>
+                                                                                                                                            </Record>
+                                                                                                                                        </Collection>
+                                                                                                                                    </PropertyValue>
+                                                                                                                                </Record>
+                                                                                                                            </Annotation>
+                                                                                                                            <Annotation Term="Core.Description" String="{i18n>CurrencyCode.Description}"/>
+                                                                                                                            </Annotations>
+                                                                                                                            <Annotations Target="CargetService.Models/IsActiveEntity">
+                                                                                                                                <Annotation Term="UI.Hidden" Bool="true"/>
+                                                                                                                            </Annotations>
+                                                                                                                            <Annotations Target="CargetService.Models/HasActiveEntity">
+                                                                                                                                <Annotation Term="UI.Hidden" Bool="true"/>
+                                                                                                                            </Annotations>
+                                                                                                                            <Annotations Target="CargetService.Models/HasDraftEntity">
+                                                                                                                                <Annotation Term="UI.Hidden" Bool="true"/>
+                                                                                                                            </Annotations>
+                                                                                                                            <Annotations Target="CargetService.Models/DraftAdministrativeData">
+                                                                                                                                <Annotation Term="UI.Hidden" Bool="true"/>
+                                                                                                                            </Annotations>
+                                                                                                                            <Annotations Target="CargetService.Currencies">
+                                                                                                                                <Annotation Term="UI.Identification">
+                                                                                                                                    <Collection>
+                                                                                                                                        <Record Type="UI.DataField">
+                                                                                                                                            <PropertyValue Property="Value" Path="name"/>
+                                                                                                                                        </Record>
+                                                                                                                                    </Collection>
+                                                                                                                                </Annotation>
+                                                                                                                            </Annotations>
+                                                                                                                            <Annotations Target="CargetService.Currencies/name">
+                                                                                                                                <Annotation Term="Common.Label" String="{i18n>Name}"/>
+                                                                                                                                </Annotations>
+                                                                                                                                <Annotations Target="CargetService.Currencies/descr">
+                                                                                                                                    <Annotation Term="Common.Label" String="{i18n>Description}"/>
+                                                                                                                                    </Annotations>
+                                                                                                                                    <Annotations Target="CargetService.Currencies/code">
+                                                                                                                                        <Annotation Term="Common.Text" Path="name"/>
+                                                                                                                                        <Annotation Term="Common.Label" String="{i18n>CurrencyCode}"/>
+                                                                                                                                        </Annotations>
+                                                                                                                                        <Annotations Target="CargetService.Currencies/symbol">
+                                                                                                                                            <Annotation Term="Common.Label" String="{i18n>CurrencySymbol}"/>
+                                                                                                                                            </Annotations>
+                                                                                                                                            <Annotations Target="CargetService.DraftAdministrativeData">
+                                                                                                                                                <Annotation Term="Common.Label" String="{i18n>Draft_DraftAdministrativeData}"/>
+                                                                                                                                                </Annotations>
+                                                                                                                                                <Annotations Target="CargetService.DraftAdministrativeData/DraftUUID">
+                                                                                                                                                    <Annotation Term="UI.Hidden" Bool="true"/>
+                                                                                                                                                    <Annotation Term="Common.Label" String="{i18n>Draft_DraftUUID}"/>
+                                                                                                                                                    </Annotations>
+                                                                                                                                                    <Annotations Target="CargetService.DraftAdministrativeData/CreationDateTime">
+                                                                                                                                                        <Annotation Term="Common.Label" String="{i18n>Draft_CreationDateTime}"/>
+                                                                                                                                                        </Annotations>
+                                                                                                                                                        <Annotations Target="CargetService.DraftAdministrativeData/CreatedByUser">
+                                                                                                                                                            <Annotation Term="Common.Label" String="{i18n>Draft_CreatedByUser}"/>
+                                                                                                                                                            </Annotations>
+                                                                                                                                                            <Annotations Target="CargetService.DraftAdministrativeData/DraftIsCreatedByMe">
+                                                                                                                                                                <Annotation Term="UI.Hidden" Bool="true"/>
+                                                                                                                                                                <Annotation Term="Common.Label" String="{i18n>Draft_DraftIsCreatedByMe}"/>
+                                                                                                                                                                </Annotations>
+                                                                                                                                                                <Annotations Target="CargetService.DraftAdministrativeData/LastChangeDateTime">
+                                                                                                                                                                    <Annotation Term="Common.Label" String="{i18n>Draft_LastChangeDateTime}"/>
+                                                                                                                                                                    </Annotations>
+                                                                                                                                                                    <Annotations Target="CargetService.DraftAdministrativeData/LastChangedByUser">
+                                                                                                                                                                        <Annotation Term="Common.Label" String="{i18n>Draft_LastChangedByUser}"/>
+                                                                                                                                                                        </Annotations>
+                                                                                                                                                                        <Annotations Target="CargetService.DraftAdministrativeData/InProcessByUser">
+                                                                                                                                                                            <Annotation Term="Common.Label" String="{i18n>Draft_InProcessByUser}"/>
+                                                                                                                                                                            </Annotations>
+                                                                                                                                                                            <Annotations Target="CargetService.DraftAdministrativeData/DraftIsProcessedByMe">
+                                                                                                                                                                                <Annotation Term="UI.Hidden" Bool="true"/>
+                                                                                                                                                                                <Annotation Term="Common.Label" String="{i18n>Draft_DraftIsProcessedByMe}"/>
+                                                                                                                                                                                </Annotations>
+                                                                                                                                                                                <Annotations Target="CargetService.Currencies_texts/locale">
+                                                                                                                                                                                    <Annotation Term="Common.Label" String="{i18n>LanguageCode}"/>
+                                                                                                                                                                                    </Annotations>
+                                                                                                                                                                                    <Annotations Target="CargetService.Currencies_texts/name">
+                                                                                                                                                                                        <Annotation Term="Common.Label" String="{i18n>Name}"/>
+                                                                                                                                                                                        </Annotations>
+                                                                                                                                                                                        <Annotations Target="CargetService.Currencies_texts/descr">
+                                                                                                                                                                                            <Annotation Term="Common.Label" String="{i18n>Description}"/>
+                                                                                                                                                                                            </Annotations>
+                                                                                                                                                                                            <Annotations Target="CargetService.Currencies_texts/code">
+                                                                                                                                                                                                <Annotation Term="Common.Text" Path="name"/>
+                                                                                                                                                                                                <Annotation Term="Common.Label" String="{i18n>CurrencyCode}"/>
+                                                                                                                                                                                                </Annotations>
+                                                                                                                                                                                            </Schema>
+                                                                                                                                                                                        </edmx:DataServices>
+                                                                                                                                                                                    </edmx:Edmx>
