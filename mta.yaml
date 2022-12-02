@@ -75,9 +75,23 @@ modules:
       - kbucargetmodels.zip
       name: kbucargetmodels
       target-path: resources/
+    - artifacts:
+      - kbucargetvehi.zip
+      name: kbucargetvehi
+      target-path: resources/
 - name: kbucargetmodels
   type: html5
   path: app/models
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm install
+    - npm run build:cf
+    supported-platforms: []
+- name: kbucargetvehi
+  type: html5
+  path: app/vehi
   build-parameters:
     build-result: dist
     builder: custom
